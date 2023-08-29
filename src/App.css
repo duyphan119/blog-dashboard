@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.tox-fullscreen{
+    z-index: 9999 !important;
+}
+.tox-collection__group{
+    z-index: 10000 !important;
+}
