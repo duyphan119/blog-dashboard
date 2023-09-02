@@ -1,8 +1,9 @@
 import { useAppSelector } from "@/redux/hooks";
 import { selectAuthor } from "@/redux/slice/auth.slice";
+import { ROUTES } from "@/utils/routes";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { Header, Sidebar } from "../components";
 
 type Props = {
@@ -23,7 +24,7 @@ const Content = ({ children }: Props) => {
     setSidebarOpen(isLgScreen);
   }, [isLgScreen]);
 
-  if (!profile) return <></>;
+  if (!profile) return <Navigate to={ROUTES.LOGIN} />;
   return (
     <div className="flex">
       <Sidebar open={sidebarOpen} />
