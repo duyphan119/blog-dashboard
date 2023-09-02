@@ -14,6 +14,7 @@ export const DASHBOARD_PAGE = gql`
         }
         slug
         title
+        thumbnail
         createdAt
       }
       recentBlogs {
@@ -23,6 +24,7 @@ export const DASHBOARD_PAGE = gql`
         }
         slug
         title
+        thumbnail
         createdAt
       }
       previousMonthCountBlog
@@ -45,8 +47,21 @@ export type DashboardPageResponse = {
 };
 
 export const pageApi = {
-  dashboardPage: (): Promise<ApolloQueryResult<DashboardPageResponse>> =>
-    client.query({
-      query: DASHBOARD_PAGE,
-    }),
+  dashboardPage: async (): Promise<DashboardPage> => {
+    try {
+      const { data }: ApolloQueryResult<DashboardPageResponse> =
+        await client.query({
+          query: DASHBOARD_PAGE,
+        });
+      if (data) return data.dashboardPage;
+    } catch (error) {}
+    return {
+      currentMonthCountBlog: 0,
+      currentMonthCountReply: 0,
+      mostViewBlogs: [],
+      previousMonthCountBlog: 0,
+      previousMonthCountReply: 0,
+      recentBlogs: [],
+    };
+  },
 };

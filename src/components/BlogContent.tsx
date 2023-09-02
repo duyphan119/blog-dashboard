@@ -1,4 +1,5 @@
 import { Blog } from "@/api/blog.api";
+import { DATE_TIME_FORMAT } from "@/utils/constants";
 import moment from "moment";
 import { FC, memo } from "react";
 
@@ -17,9 +18,7 @@ const BlogContent: FC<Props> = ({ blog }) => {
         </div>
         <div className="">
           Ngày đăng:{" "}
-          <strong>
-            {moment(blog.createdAt).format("DD-MM-YYYY HH:mm:ss")}
-          </strong>
+          <strong>{moment(blog.createdAt).format(DATE_TIME_FORMAT)}</strong>
         </div>
       </div>
       <div

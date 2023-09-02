@@ -14,5 +14,5 @@ export const getRate = (a: number, b: number) => {
   let max = a > b ? a : b;
   if (min === 0) return max;
 
-  return +(max / min - 1).toFixed(2);
+  return max / min - 1;
 };

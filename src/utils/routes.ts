@@ -1,0 +1,15 @@
+export enum ROUTES {
+  HOME = "/",
+  BLOGS = "/blogs",
+  CATEGORIES = "/categories",
+  TRASH_BLOGS = "/blogs/trash",
+  TRASH_CATEGORIES = "/categories/trash",
+  LOGIN = "/login",
+  REGISTER = "/register",
+  FORGOT_PASSWORD = "/forgot-password",
+  PROFILE = "/profile",
+  PREVIEW_BLOG = "/blogs/preview",
+  NOTIFICATIONS = "/notifications",
+  CONTACTS = "/contacts",
+  REPLIES = "/replies",
+}

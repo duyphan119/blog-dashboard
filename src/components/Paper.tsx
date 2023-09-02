@@ -2,16 +2,18 @@ import { FC, ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
-  title?: ReactNode;
+  title?: string;
+  rightTitle?: ReactNode;
 };
 
-const Paper: FC<Props> = ({ children, title }) => {
+const Paper: FC<Props> = ({ children, title, rightTitle }) => {
   return (
     <section className="bg-white rounded-md">
       {title ? (
         <>
-          <div className="px-4 pt-4 pb-2">
+          <div className="px-4 pt-4 pb-2 flex justify-between items-center">
             <strong>{title}</strong>
+            {rightTitle}
           </div>
           <div className="px-4 py-2">
             <div className="bg-black h-[1px] w-full"></div>

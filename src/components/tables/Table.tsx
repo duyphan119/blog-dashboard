@@ -1,6 +1,12 @@
 import { toastError, toastSuccess } from "@/config/toastify";
 import { useQueryString } from "@/hooks";
 import {
+  MESSAGE_CONFIRM,
+  MESSAGE_FAIL,
+  MESSAGE_SUCCESS,
+} from "@/utils/message";
+import { TITLES } from "@/utils/titles";
+import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
@@ -30,11 +36,19 @@ type Props = {
   onSoftDelete?: (ids: string[]) => Promise<any>;
   onRestore?: (ids: string[]) => Promise<any>;
   onDelete?: (ids: string[]) => Promise<any>;
-  isTrashPage?: boolean;
+  restoreAction?: boolean;
   hasRowSelection?: boolean;
   previewAction?: boolean;
   hideTopActions?: boolean;
   sortable?: boolean;
+  editAction?: boolean;
+  softDeleteAction?: boolean;
+  deleteAction?: boolean;
+  hasDeleteBtn?: boolean;
+  hasLinkCreate?: boolean;
+  hasRestoreBtn?: boolean;
+  hasSearch?: boolean;
+  getRowLink?: (row: any) => string;
 };
 
 const Table = ({
@@ -43,13 +57,21 @@ const Table = ({
   count = 0,
   pageSizeOptions = [10, 30, 50, 100, 200],
   onSoftDelete,
-  isTrashPage,
+  restoreAction,
   onDelete,
   onRestore,
   hasRowSelection,
   previewAction,
   hideTopActions,
   sortable = false,
+  editAction,
+  softDeleteAction,
+  deleteAction,
+  hasDeleteBtn,
+  hasRestoreBtn,
+  hasLinkCreate,
+  hasSearch,
+  getRowLink,
 }: Props) => {
   const hasActions = onDelete || onRestore || onSoftDelete ? true : false;
   const { pathname } = useLocation();
@@ -137,48 +159,70 @@ const Table = ({
         header: "Thao tác",
         cell: ({ row }) => (
           <div className="flex gap-2 justify-center">
-            {isTrashPage ? (
+            {restoreAction ? (
               <button
                 className="text-xl text-teal"
                 type="button"
-                title="Phục hồi bản ghi"
+                title={TITLES.RESTORE_RECORD}
                 onClick={() => handleRestore([], [row.original._id])}
               >
                 <FaTrashRestoreAlt />
               </button>
-            ) : (
+            ) : null}
+            {editAction ? (
               <Link
                 to={`${pathname}/edit/${row.original._id}`}
                 className="text-xl text-orange"
-                title="Sửa bản ghi"
+                title={TITLES.EDIT_RECORD}
               >
                 <AiTwotoneEdit />
               </Link>
-            )}
+            ) : null}
             {previewAction ? (
               <Link
                 to={`${pathname}/preview/${row.original._id}`}
                 className="text-xl text-purple"
-                title="Xem bản ghi"
+                title={TITLES.PREVIEW_RECORD}
               >
                 <VscPreview />
               </Link>
             ) : null}
-            <button
-              className="text-xl text-red"
-              type="button"
-              title="Xoá bản ghi"
-              onClick={() => handleDelete([], [row.original._id])}
-            >
-              <AiTwotoneDelete />
-            </button>
+            {softDeleteAction ? (
+              <button
+                className="text-xl text-red"
+                type="button"
+                title={TITLES.SOFT_DELETE_RECORD}
+                onClick={() => handleDelete([], [row.original._id])}
+              >
+                <AiTwotoneDelete />
+              </button>
+            ) : null}
+            {deleteAction ? (
+              <button
+                className="text-xl text-red"
+                type="button"
+                title={TITLES.DELETE_RECORD}
+                onClick={() => handleDelete([], [row.original._id])}
+              >
+                <AiTwotoneDelete />
+              </button>
+            ) : null}
           </div>
         ),
         enableSorting: false,
       });
     }
     return result;
-  }, [columns, isTrashPage, hasActions, hasRowSelection]);
+  }, [
+    columns,
+    restoreAction,
+    deleteAction,
+    softDeleteAction,
+    previewAction,
+    editAction,
+    hasActions,
+    hasRowSelection,
+  ]);
 
   const table = useReactTable({
     data,
@@ -228,34 +272,28 @@ const Table = ({
     listId?: string[],
     loading?: boolean
   ) => {
-    const answer = window.confirm(
-      `Bạn có chắc chắn xoá${isTrashPage ? " vĩnh viễn " : " "}?`
-    );
-    if (answer) {
-      if (loading) setDeleteLoading(true);
-      const ids = listId || (keys.map((key) => data[+key]._id) as string[]);
+    if (deleteAction || softDeleteAction) {
+      const answer = window.confirm(
+        deleteAction ? MESSAGE_CONFIRM.DELETE : MESSAGE_CONFIRM.SOFT_DELETE
+      );
+      if (answer) {
+        if (loading) setDeleteLoading(true);
+        const ids = listId || (keys.map((key) => data[+key]._id) as string[]);
+        try {
+          const isDeleted = await (deleteAction
+            ? onDelete?.(ids)
+            : onSoftDelete?.(ids));
 
-      try {
-        const response = await (isTrashPage
-          ? onDelete?.(ids)
-          : onSoftDelete?.(ids));
-
-        if (response.data) {
-          const keys = Object.keys(response.data);
-          if (keys.length > 0) {
-            if (response.data[keys[0]]) {
-              table.setRowSelection({});
-              toastSuccess("Xoá thành công");
-              setData((state) =>
-                state.filter((item) => !ids.includes(item._id))
-              );
-            }
+          if (isDeleted) {
+            table.setRowSelection({});
+            toastSuccess(MESSAGE_SUCCESS.DELETE);
+            setData((state) => state.filter((item) => !ids.includes(item._id)));
           }
+        } catch (error) {
+          toastError(MESSAGE_FAIL.DELETE);
+        } finally {
+          if (loading) setDeleteLoading(false);
         }
-      } catch (error) {
-        toastError("Xoá không thành công");
-      } finally {
-        if (loading) setDeleteLoading(false);
       }
     }
   };
@@ -265,7 +303,7 @@ const Table = ({
     listId?: string[],
     loading?: boolean
   ) => {
-    const answer = window.confirm(`Bạn có chắc chắn phục hồi ?`);
+    const answer = window.confirm(MESSAGE_CONFIRM.RESTORE);
     if (answer) {
       if (loading) setRestoreLoading(true);
       const ids = listId || (keys.map((key) => data[+key]._id) as string[]);
@@ -277,7 +315,7 @@ const Table = ({
           if (keys.length > 0) {
             if (response.data[keys[0]]) {
               table.setRowSelection({});
-              toastSuccess("Phục hồi thành công");
+              toastSuccess(MESSAGE_SUCCESS.RESTORE);
               setData((state) =>
                 state.filter((item) => !ids.includes(item._id))
               );
@@ -285,7 +323,7 @@ const Table = ({
           }
         }
       } catch (error) {
-        toastError("Phục hồi không thành công");
+        toastError(MESSAGE_FAIL.RESTORE);
       } finally {
         if (loading) setRestoreLoading(false);
       }
@@ -296,24 +334,26 @@ const Table = ({
     <>
       {hideTopActions ? null : (
         <div className="flex gap-4 items-center">
-          <form
-            onSubmit={handleSubmitSearch}
-            className="flex-1 pl-2 flex items-center border-black border rounded-sm overflow-hidden"
-          >
-            <FaSearch className="text-black" />
-            <input
-              type="search"
-              className="w-full outline-none p-2"
-              placeholder="Tìm kiếm"
-              ref={searchRef}
-              defaultValue={keyword || ""}
-            />
-          </form>
-          {isTrashPage ? (
+          {hasSearch ? (
+            <form
+              onSubmit={handleSubmitSearch}
+              className="flex-1 pl-2 flex items-center border-black border rounded-sm overflow-hidden"
+            >
+              <FaSearch className="text-black" />
+              <input
+                type="search"
+                className="w-full outline-none p-2"
+                placeholder="Tìm kiếm"
+                ref={searchRef}
+                defaultValue={keyword || ""}
+              />
+            </form>
+          ) : null}
+          {hasRestoreBtn ? (
             <button
               className={`uppercase bg-teal text-white px-6 py-2 rounded-sm`}
               type="button"
-              title="Phục hồi nhiều bản ghi"
+              title={TITLES.RESTORE_RECORDS}
               disabled={countSelectedRows === 0}
               onClick={() => handleRestore(selectedRowIndexes, undefined, true)}
             >
@@ -327,27 +367,33 @@ const Table = ({
               )}
             </button>
           ) : null}
-          <button
-            className={`uppercase bg-red text-white px-6 py-2 rounded-sm`}
-            type="button"
-            disabled={countSelectedRows === 0}
-            title="Xoá vĩnh viễn nhiều bản ghi"
-            onClick={() => handleDelete(selectedRowIndexes, undefined, true)}
-          >
-            {deleteLoading ? (
-              "Đang xoá..."
-            ) : (
-              <>
-                Xoá {countSelectedRows === 0 ? null : `(${countSelectedRows})`}
-              </>
-            )}
-          </button>
-          <Link
-            to={`${pathname}/add`}
-            className="uppercase bg-blue text-white px-6 py-2 rounded-sm "
-          >
-            Thêm mới
-          </Link>
+          {hasDeleteBtn ? (
+            <button
+              className={`uppercase bg-red text-white px-6 py-2 rounded-sm`}
+              type="button"
+              disabled={countSelectedRows === 0}
+              title={TITLES.DELETE_RECORDS}
+              onClick={() => handleDelete(selectedRowIndexes, undefined, true)}
+            >
+              {deleteLoading ? (
+                "Đang xoá..."
+              ) : (
+                <>
+                  Xoá{" "}
+                  {countSelectedRows === 0 ? null : `(${countSelectedRows})`}
+                </>
+              )}
+            </button>
+          ) : null}
+          {hasLinkCreate ? (
+            <Link
+              to={`${pathname}/add`}
+              className="uppercase bg-blue text-white px-6 py-2 rounded-sm"
+              title={TITLES.NEW_RECORD}
+            >
+              Thêm mới
+            </Link>
+          ) : null}
         </div>
       )}
 
@@ -359,7 +405,7 @@ const Table = ({
                 return (
                   <th
                     key={header.id}
-                    className={`px6 py-4 ${
+                    className={`p-2 ${
                       index === 0 ? "" : "border-l border-l-hr"
                     }`}
                     colSpan={header.colSpan}
@@ -403,17 +449,19 @@ const Table = ({
                 className={`${indexRow === 0 ? "" : "border-t border-t-hr"}`}
               >
                 {row.getVisibleCells().map((cell, indexCol) => {
+                  const content = flexRender(
+                    cell.column.columnDef.cell,
+                    cell.getContext()
+                  );
+                  const href = getRowLink?.(row.original) ?? "";
                   return (
                     <td
                       key={cell.id}
-                      className={`px6 py-4 ${
+                      className={`p-2 ${
                         indexCol === 0 ? "" : "border-l border-l-hr"
                       }`}
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {href ? <Link to={href}>{content}</Link> : content}
                     </td>
                   );
                 })}

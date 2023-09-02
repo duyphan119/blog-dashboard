@@ -2,21 +2,20 @@ import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
 import { FC, useMemo } from "react";
 
-import { Blog, blogApi, BlogsResponse } from "@/api/blog.api";
+import { Blog, blogApi, Blogs } from "@/api/blog.api";
 import { Paper } from "@/components";
 import { Table } from "@/components/tables";
 import { useDocumentTitle } from "@/hooks";
+import { DATE_TIME_FORMAT } from "@/utils/constants";
+import { TITLES } from "@/utils/titles";
 import { useLoaderData } from "react-router-dom";
 
 type Props = {};
 
 const BlogsPage: FC<Props> = () => {
-  useDocumentTitle("Quản lý bài viết");
+  useDocumentTitle(TITLES.BLOGS);
 
-  const data = useLoaderData() as BlogsResponse | null;
-
-  const rows = data?.blogs.blogs ?? [];
-  const count = data?.blogs.count ?? 0;
+  const { count, blogs: rows } = useLoaderData() as Blogs;
 
   const columns = useMemo<ColumnDef<Blog>[]>(
     () => [
@@ -24,11 +23,12 @@ const BlogsPage: FC<Props> = () => {
         accessorKey: "title",
         header: "Tiêu đề",
         enableSorting: true,
-      },
-      {
-        accessorKey: "slug",
-        header: "Slug",
-        enableSorting: true,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2 flex-col md:flex-row">
+            <img src={row.original.thumbnail} alt="" width={120} height={60} />
+            <span>{row.original.title}</span>
+          </div>
+        ),
       },
       {
         accessorKey: "categories",
@@ -43,7 +43,7 @@ const BlogsPage: FC<Props> = () => {
         accessorKey: "createdAt",
         header: "Ngày tạo",
         cell: ({ row }) =>
-          moment(row.original.createdAt).format("DD-MM-YYYY HH:mm:ss"),
+          moment(row.original.createdAt).format(DATE_TIME_FORMAT),
         enableSorting: true,
       },
     ],
@@ -51,7 +51,7 @@ const BlogsPage: FC<Props> = () => {
   );
 
   return (
-    <Paper title="Danh sách bài viết">
+    <Paper title={TITLES.BLOGS}>
       <Table
         rows={rows}
         columns={columns}
@@ -60,6 +60,11 @@ const BlogsPage: FC<Props> = () => {
         hasRowSelection={true}
         previewAction={true}
         sortable={true}
+        softDeleteAction={true}
+        editAction={true}
+        hasDeleteBtn={true}
+        hasSearch={true}
+        hasLinkCreate={true}
       />
     </Paper>
   );

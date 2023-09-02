@@ -4,7 +4,7 @@ import { BsArrowDownRight, BsArrowUpRight } from "react-icons/bs";
 
 type Props = {
   icon: IconType;
-  arrowDirection?: "up" | "down";
+  arrowDirection?: "up" | "down" | "none";
   title: string;
   rate?: number;
   bgColor?: "bg-blue" | "bg-darkpink";
@@ -29,15 +29,17 @@ const Widget: FC<Props> = ({
           <Icon />
         </div>
       </div>
-      <div
-        className={`text-3xl flex gap-2 items-center ${
-          arrowDirection === "up" ? "text-green" : "text-red"
-        }`}
-        title="So với tháng trước"
-      >
-        {arrowDirection === "up" ? <BsArrowUpRight /> : <BsArrowDownRight />}
-        <span className="">{rate ? `${rate * 100}%` : null}</span>
-      </div>
+      {arrowDirection !== "none" ? (
+        <div
+          className={`text-3xl flex gap-2 items-center ${
+            arrowDirection === "up" ? "text-green" : "text-red"
+          }`}
+          title="So với tháng trước"
+        >
+          {arrowDirection === "up" ? <BsArrowUpRight /> : <BsArrowDownRight />}
+          <span className="">{rate ? rate.toFixed(2) : null}</span>
+        </div>
+      ) : null}
     </div>
   );
 };

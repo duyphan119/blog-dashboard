@@ -1,22 +1,3 @@
-export const PUBLIC_ROUTES = {
-  DEFAULT: "/",
-  ADMIN: {
-    DEFAULT: "/admin",
-  },
-};
-
-export const ROUTES = {
-  ADMIN: "/",
-  BLOGS: "/blogs",
-  BLOG_CATEGORIES: "/blog-categories",
-  TRASH_BLOGS: "/trash/blogs",
-  TRASH_BLOG_CATEGORIES: "/trash/blog-categories",
-  LOGIN: "/login",
-  REGISTER: "/register",
-  FORGOT_PASSWORD: "/forgot-password",
-  PROFILE: "/profile",
-};
-
 export const IS_NEXT_RESPONSE_EMPTY = {
   rows: [],
   isNext: false,
@@ -33,11 +14,7 @@ export const HOME_PAGE = {
   LIMIT_VANBAN: 10,
 };
 export const PLACEHOLDER_THUMBNAIL = "/images/placeholder-thumbnail.jfif";
-export const HEADER_HEIGHT = 80;
-export const DASHBOARD = {
-  SIDEBAR_WIDTH: 286,
-  HEADER_HEIGHT: 80,
-};
+
 export const ACCESS_TOKEN_KEY = "access_token";
 export const API_KEY_TINYMCE = `${import.meta.env.VITE_API_KEY_TINYMCE}`;
 export const SERVER =
@@ -48,3 +25,4 @@ export const WS_GRAPHQL_SERVER =
   import.meta.env.VITE_NODE_ENV === "production"
     ? `${import.meta.env.VITE_WS_GRAPHQL_SERVER}`
     : "ws://localhost:4000/graphql";
+export const DATE_TIME_FORMAT = "DD-MM-YYYY HH:mm:ss";

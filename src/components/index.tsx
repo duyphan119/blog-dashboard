@@ -6,3 +6,4 @@ export { default as ScrollToTop } from "./ScrollToTop";
 export { default as Sidebar } from "./Sidebar";
 export { default as TablePagination } from "./TablePagination";
 export { default as Widget } from "./Widget";
+export { default as NotificationIcon } from "./NotificationIcon";

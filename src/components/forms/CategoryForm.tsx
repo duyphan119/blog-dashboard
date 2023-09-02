@@ -12,6 +12,7 @@ import { FooterForm } from "@/components/forms";
 import { Input } from "@/components/inputs";
 import { Select } from "@/components/selects";
 import { toastError, toastSuccess } from "@/config/toastify";
+import { MESSAGE_FAIL, MESSAGE_SUCCESS } from "@/utils/message";
 import { useMutation } from "@apollo/client";
 import { FC, useMemo, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -74,25 +75,25 @@ const CategoryForm: FC<Props> = ({ parents, item }) => {
   useEffect(() => {
     if (dataCreated.data?.createCategory) {
       reset(initialValues);
-      toastSuccess("Thêm thành công");
+      toastSuccess(MESSAGE_SUCCESS.CREATE);
     }
   }, [dataCreated.data]);
 
   useEffect(() => {
     if (dataUpdated.data?.updateCategory) {
-      toastSuccess("Sửa thành công");
+      toastSuccess(MESSAGE_SUCCESS.UPDATE);
     }
   }, [dataUpdated.data]);
 
   useEffect(() => {
     if (dataCreated.error) {
-      toastError("Thêm không thành công");
+      toastError(MESSAGE_FAIL.CREATE);
     }
   }, [dataCreated.error]);
 
   useEffect(() => {
     if (dataUpdated.error) {
-      toastError("Sửa không thành công");
+      toastError(MESSAGE_FAIL.UPDATE);
     }
   }, [dataUpdated.error]);
 

@@ -3,7 +3,8 @@ import { selectAuthor } from "@/redux/slice/auth.slice";
 import { FC, memo } from "react";
 import { FaSearch } from "react-icons/fa";
 import { GrMenu } from "react-icons/gr";
-import { DASHBOARD } from "../constants";
+import { Input } from "./inputs";
+import NotificationIcon from "./NotificationIcon";
 
 type Props = {
   onToggleSidebar: () => void;
@@ -12,29 +13,25 @@ type Props = {
 const Header: FC<Props> = ({ onToggleSidebar }) => {
   const profile = useAppSelector(selectAuthor);
   return (
-    <header
-      className="px-6 bg-white shadow z-[9999] flex items-center justify-between"
-      style={{
-        height: DASHBOARD.HEADER_HEIGHT,
-      }}
-    >
+    <header className="px-6 bg-white shadow z-[9999] flex items-center justify-between gap-4 h-20">
       <div className="left flex items-center gap-4 flex-1">
         <span className="cursor-pointer text-2xl" onClick={onToggleSidebar}>
           <GrMenu />
         </span>
         <div className="relative flex-1">
-          <input
-            className="py-2 pr-2 pl-9 border border-neutral-300 w-full rounded-sm outline-neutral-400 focus:border-transparent"
+          <Input
             type="search"
             placeholder="Nhập từ khoá để tìm kiếm"
+            inputClassName="pl-9"
           />
           <span className="absolute top-1/2 left-3 -translate-y-1/2 text-neutral-500">
             <FaSearch />
           </span>
         </div>
       </div>
-      <div className="right flex-1 flex items-center gap-4 justify-end">
-        <p className="text-neutral-500">
+      <div className="right flex items-center gap-4 justify-end">
+        <NotificationIcon />
+        <p className="text-neutral-500 hidden md:block">
           Xin chào,{" "}
           <span className="font-medium text-black">{profile?.name}</span>
         </p>

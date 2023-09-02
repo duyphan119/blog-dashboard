@@ -2,24 +2,19 @@ import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
 import { FC, useMemo } from "react";
 
-import {
-  Category,
-  categoryApi,
-  DeletedCategoriesResponse,
-} from "@/api/category.api";
+import { Categories, Category, categoryApi } from "@/api/category.api";
 import { Paper } from "@/components";
 import { Table } from "@/components/tables";
 import { useDocumentTitle } from "@/hooks";
 import { useLoaderData } from "react-router-dom";
+import { TITLES } from "@/utils/titles";
+import { DATE_TIME_FORMAT } from "@/utils/constants";
 
 type Props = {};
 
 const TrashCategoriesPage: FC<Props> = () => {
-  useDocumentTitle("Quản lý danh mục bài viết đã xoá");
-  const data = useLoaderData() as DeletedCategoriesResponse | null;
-
-  const rows = data?.deletedCategories.categories ?? [];
-  const count = data?.deletedCategories.count ?? 0;
+  useDocumentTitle(TITLES.TRASH_CATEGORIES);
+  const { count, categories: rows } = useLoaderData() as Categories;
 
   const columns = useMemo<ColumnDef<Category>[]>(
     () => [
@@ -43,7 +38,7 @@ const TrashCategoriesPage: FC<Props> = () => {
         accessorKey: "createdAt",
         header: "Ngày tạo",
         cell: ({ row }) =>
-          moment(row.original.createdAt).format("DD-MM-YYYY HH:mm:ss"),
+          moment(row.original.createdAt).format(DATE_TIME_FORMAT),
         enableSorting: true,
       },
     ],
@@ -51,16 +46,19 @@ const TrashCategoriesPage: FC<Props> = () => {
   );
 
   return (
-    <Paper title="Danh sách danh mục bài viết đã xoá">
+    <Paper title={TITLES.TRASH_CATEGORIES}>
       <Table
         rows={rows}
         columns={columns}
         onDelete={categoryApi.delete}
         onRestore={categoryApi.restore}
         count={count}
-        isTrashPage={true}
+        restoreAction={true}
         hasRowSelection={true}
         sortable={true}
+        hasDeleteBtn={true}
+        hasSearch={true}
+        hasRestoreBtn={true}
       />
     </Paper>
   );

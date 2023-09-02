@@ -101,25 +101,40 @@ export const NEW_ACCESS_TOKEN = gql`
   }
 `;
 
-const authApi = {
-  login: (dto: LoginDTO): Promise<FetchResult<LoginResponse>> =>
-    client.mutate({
-      mutation: LOGIN,
-      variables: {
-        loginInput: dto,
-      },
-    }),
-  register: (dto: RegisterDTO): Promise<FetchResult<RegisterResponse>> =>
-    client.mutate({
-      mutation: REGISTER,
-      variables: {
-        registerInput: dto,
-      },
-    }),
-  profile: (): Promise<ApolloQueryResult<ProfileResponse>> =>
-    client.query({
-      query: PROFILE,
-    }),
+export const authApi = {
+  login: async (dto: LoginDTO): Promise<AuthResponse | null> => {
+    try {
+      const { data }: FetchResult<LoginResponse> = await client.mutate({
+        mutation: LOGIN,
+        variables: {
+          loginInput: dto,
+        },
+      });
+      if (data) return data.login;
+    } catch (error) {}
+    return null;
+  },
+  register: async (dto: RegisterDTO): Promise<AuthResponse | null> => {
+    try {
+      const { data }: FetchResult<RegisterResponse> = await client.mutate({
+        mutation: REGISTER,
+        variables: {
+          registerInput: dto,
+        },
+      });
+      if (data) return data.register;
+    } catch (error) {}
+    return null;
+  },
+  profile: async (): Promise<Author | null> => {
+    try {
+      const { data }: ApolloQueryResult<ProfileResponse> = await client.query({
+        query: PROFILE,
+      });
+      return data.profile;
+    } catch (error) {}
+    return null;
+  },
   updateProfile: (
     dto: UpdateProfileDTO
   ): Promise<FetchResult<UpdateProfileResponse>> =>
@@ -134,5 +149,3 @@ const authApi = {
       mutation: NEW_ACCESS_TOKEN,
     }),
 };
-
-export default authApi;

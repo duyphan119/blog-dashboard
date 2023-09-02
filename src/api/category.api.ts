@@ -1,5 +1,5 @@
-import { privateClient } from "@/config/apolloClient";
-import { gql } from "@apollo/client";
+import { client } from "@/config/apolloClient";
+import { ApolloQueryResult, FetchResult, gql } from "@apollo/client";
 
 export type Category = {
   _id: string;
@@ -72,20 +72,18 @@ export type RootCategoriesResponse = {
   rootCategories: Category[];
 };
 
+export type Categories = {
+  categories: Category[];
+  count: number;
+  totalPages: number;
+};
+
 export type CategoriesResponse = {
-  categories: {
-    categories: Category[];
-    count: number;
-    totalPages: number;
-  };
+  categories: Categories;
 };
 
 export type DeletedCategoriesResponse = {
-  deletedCategories: {
-    categories: Category[];
-    count: number;
-    totalPages: number;
-  };
+  deletedCategories: Categories;
 };
 
 export const CREATE_CATEGORY = gql`
@@ -196,50 +194,99 @@ export const DELETED_CATEGORIES = gql`
 `;
 
 export const categoryApi = {
-  softDelete: (idList: string[]) =>
-    privateClient().mutate({
-      mutation: SOFT_DELETE_CATEGORIES,
-      variables: {
-        idList,
-      },
-    }),
-  delete: (idList: string[]) =>
-    privateClient().mutate({
-      mutation: DELETE_CATEGORIES,
-      variables: {
-        idList,
-      },
-    }),
-  restore: (idList: string[]) =>
-    privateClient().mutate({
-      mutation: RESTORE_CATEGORIES,
-      variables: {
-        idList,
-      },
-    }),
-  categories: (params: CategoryParams) =>
-    privateClient().query({
-      query: CATEGORIES,
-      variables: {
-        categoriesInput: params,
-      },
-    }),
-  deletedCategories: (params: CategoryParams) =>
-    privateClient().query({
-      query: DELETED_CATEGORIES,
-      variables: {
-        categoriesInput: params,
-      },
-    }),
-  rootCategories: () =>
-    privateClient().query({
-      query: ROOT_CATEGORIES,
-    }),
-  category: (categoryId: string) =>
-    privateClient().query({
-      query: CATEGORY,
-      variables: {
-        categoryId,
-      },
-    }),
+  softDelete: async (idList: string[]): Promise<boolean> => {
+    try {
+      const { data }: FetchResult<SoftDeleteCategoriesResponse> =
+        await client.mutate({
+          mutation: SOFT_DELETE_CATEGORIES,
+          variables: {
+            idList,
+          },
+        });
+      if (data) return data.softDeleteCategories;
+    } catch (error) {}
+    return false;
+  },
+  delete: async (idList: string[]): Promise<boolean> => {
+    try {
+      const { data }: FetchResult<DeleteCategoriesResponse> =
+        await client.mutate({
+          mutation: DELETE_CATEGORIES,
+          variables: {
+            idList,
+          },
+        });
+      if (data) return data.deleteCategories;
+    } catch (error) {}
+    return false;
+  },
+  restore: async (idList: string[]): Promise<boolean> => {
+    try {
+      const { data }: FetchResult<RestoreCategoriesResponse> =
+        await client.mutate({
+          mutation: RESTORE_CATEGORIES,
+          variables: {
+            idList,
+          },
+        });
+      if (data) return data.restoreCategories;
+    } catch (error) {}
+    return false;
+  },
+  categories: async (params?: CategoryParams): Promise<Categories> => {
+    try {
+      const { data }: ApolloQueryResult<CategoriesResponse> =
+        await client.query({
+          query: CATEGORIES,
+          variables: {
+            categoriesInput: params,
+          },
+        });
+      if (data) return data.categories;
+    } catch (error) {}
+    return {
+      categories: [],
+      count: 0,
+      totalPages: 0,
+    };
+  },
+  deletedCategories: async (params?: CategoryParams): Promise<Categories> => {
+    try {
+      const { data }: ApolloQueryResult<DeletedCategoriesResponse> =
+        await client.query({
+          query: DELETED_CATEGORIES,
+          variables: {
+            categoriesInput: params,
+          },
+        });
+      if (data) return data.deletedCategories;
+    } catch (error) {}
+    return {
+      categories: [],
+      count: 0,
+      totalPages: 0,
+    };
+  },
+  rootCategories: async (): Promise<Category[]> => {
+    try {
+      const { data }: ApolloQueryResult<RootCategoriesResponse> =
+        await client.query({
+          query: ROOT_CATEGORIES,
+        });
+      if (data) return data.rootCategories;
+    } catch (error) {}
+    return [];
+  },
+  category: async (categoryId: string): Promise<Category | null> => {
+    try {
+      const { data }: ApolloQueryResult<CategoryResponse> = await client.query({
+        query: CATEGORY,
+        variables: {
+          categoryId,
+        },
+      });
+      if (data) return data.category;
+    } catch (error) {}
+    return null;
+  },
 };

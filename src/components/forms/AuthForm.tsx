@@ -8,9 +8,10 @@ import {
   RegisterResponse,
 } from "@/api/auth.api";
 import { toastError, toastSuccess } from "@/config/toastify";
-import { ROUTES } from "@/constants";
 import { useAppDispatch } from "@/redux/hooks";
 import { login } from "@/redux/slice/auth.slice";
+import { MESSAGE_FAIL, MESSAGE_SUCCESS } from "@/utils/message";
+import { ROUTES } from "@/utils/routes";
 import { useMutation } from "@apollo/client";
 import { FC, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -31,16 +32,16 @@ const AuthForm: FC<Props> = ({ isRegisterForm }) => {
 
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
-  const initialValues = {
-    email: "duychomap123@gmail.com",
-    password: "123456",
+  const defaultValues = {
+    email: "",
+    password: "",
     ...(isRegisterForm ? { name: "" } : {}),
   };
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
-  } = useForm<RegisterDTO>({ defaultValues: initialValues });
+  } = useForm<RegisterDTO>({ defaultValues });
 
   const loading = isSubmitting || dataLogin.loading || dataRegister.loading;
 
@@ -65,12 +66,12 @@ const AuthForm: FC<Props> = ({ isRegisterForm }) => {
     if (dataRegister.data) {
       if (dataRegister.data.register) {
         appDispatch(login(dataRegister.data.register));
-        navigate(ROUTES.ADMIN);
-        toastSuccess("Đăng ký thành công");
+        navigate(ROUTES.HOME);
+        toastSuccess(MESSAGE_SUCCESS.REGISTER);
       }
     }
     if (dataRegister.error) {
-      toastError("Đăng ký không thành công");
+      toastError(MESSAGE_FAIL.REGISTER);
     }
   }, [dataRegister]);
 
@@ -78,12 +79,12 @@ const AuthForm: FC<Props> = ({ isRegisterForm }) => {
     if (dataLogin.data) {
       if (dataLogin.data.login) {
         appDispatch(login(dataLogin.data.login));
-        navigate(ROUTES.ADMIN);
-        toastSuccess("Đăng nhập thành công");
+        navigate(ROUTES.HOME);
+        toastSuccess(MESSAGE_SUCCESS.LOGIN);
       }
     }
     if (dataLogin.error) {
-      toastError("Đăng nhập không thành công");
+      toastError(MESSAGE_FAIL.LOGIN);
     }
   }, [dataLogin]);
 

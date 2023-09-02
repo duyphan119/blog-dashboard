@@ -2,21 +2,20 @@ import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
 import { FC, useMemo } from "react";
 
-import { CategoriesResponse, Category, categoryApi } from "@/api/category.api";
+import { Categories, Category, categoryApi } from "@/api/category.api";
 import { Paper } from "@/components";
 import { Table } from "@/components/tables";
 import { useDocumentTitle } from "@/hooks";
 import { useLoaderData } from "react-router-dom";
+import { TITLES } from "@/utils/titles";
+import { DATE_TIME_FORMAT } from "@/utils/constants";
 
 type Props = {};
 
 const CategoriesPage: FC<Props> = () => {
-  useDocumentTitle("Quản lý danh mục bài viết");
+  useDocumentTitle(TITLES.CATEGORIES);
 
-  const data = useLoaderData() as CategoriesResponse | null;
-
-  const rows = data?.categories.categories ?? [];
-  const count = data?.categories.count ?? 0;
+  const { count, categories: rows } = useLoaderData() as Categories;
 
   const columns = useMemo<ColumnDef<Category>[]>(
     () => [
@@ -40,7 +39,7 @@ const CategoriesPage: FC<Props> = () => {
         accessorKey: "createdAt",
         header: "Ngày tạo",
         cell: ({ row }) =>
-          moment(row.original.createdAt).format("DD-MM-YYYY HH:mm:ss"),
+          moment(row.original.createdAt).format(DATE_TIME_FORMAT),
         enableSorting: true,
       },
     ],
@@ -48,7 +47,7 @@ const CategoriesPage: FC<Props> = () => {
   );
 
   return (
-    <Paper title="Danh sách danh mục bài viết">
+    <Paper title={TITLES.CATEGORIES}>
       <Table
         rows={rows}
         columns={columns}
@@ -56,6 +55,11 @@ const CategoriesPage: FC<Props> = () => {
         count={count}
         hasRowSelection={true}
         sortable={true}
+        softDeleteAction={true}
+        editAction={true}
+        hasDeleteBtn={true}
+        hasSearch={true}
+        hasLinkCreate={true}
       />
     </Paper>
   );

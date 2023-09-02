@@ -1,6 +1,6 @@
 import { FC, useState, memo } from "react";
 import { Editor as TextEditor } from "@tinymce/tinymce-react";
-import { API_KEY_TINYMCE } from "@/constants";
+import { API_KEY_TINYMCE } from "@/utils/constants";
 
 type Props = {
   value: string;

@@ -1,18 +1,3 @@
-// import { AuthLayout, DefaultLayout } from "@/layouts";
-// import {
-//   HomePage,
-//   LoginPage,
-//   AddBlogPage,
-//   BlogsPage,
-//   EditBlogPage,
-//   CategoriesPage,
-//   AddCategoryPage,
-//   EditCategoryPage,
-//   TrashCategoriesPage,
-//   BlogPreviewPage,
-//   ProfilePage,
-//   TrashBlogsPage,
-// } from "@/pages";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import {
   addBlogLoader,
@@ -29,6 +14,7 @@ import {
 } from "./loaders/category.loader";
 import { lazy } from "react";
 import { homePageLoader } from "./loaders/homePage.loader";
+import { contactsLoader } from "./loaders/contact.loader";
 
 const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
 const DefaultLayout = lazy(() => import("@/layouts/DefaultLayout"));
@@ -44,6 +30,7 @@ const AddCategoryPage = lazy(() => import("@/pages/AddCategoryPage"));
 const EditCategoryPage = lazy(() => import("@/pages/EditCategoryPage"));
 const CategoriesPage = lazy(() => import("@/pages/CategoriesPage"));
 const TrashCategoriesPage = lazy(() => import("@/pages/TrashCategoriesPage"));
+const ContactsPage = lazy(() => import("@/pages/ContactsPage"));
 
 const router = createBrowserRouter([
   {
@@ -66,49 +53,54 @@ const router = createBrowserRouter([
             element: <ProfilePage />,
           },
           {
-            path: "blog",
+            path: "blogs",
             loader: blogsLoader,
             element: <BlogsPage />,
           },
           {
-            path: "blog/add",
+            path: "blogs/add",
             loader: addBlogLoader,
             element: <AddBlogPage />,
           },
           {
-            path: "blog/edit/:blogId",
+            path: "blogs/edit/:blogId",
             loader: editBlogLoader,
             element: <EditBlogPage />,
           },
           {
-            path: "blog/preview/:blogId",
+            path: "blogs/preview/:blogId",
             loader: previewBlogLoader,
             element: <BlogPreviewPage />,
           },
           {
-            path: "blog/trash",
+            path: "blogs/trash",
             loader: deletedBlogsLoader,
             element: <TrashBlogsPage />,
           },
           {
-            path: "category",
+            path: "categories",
             loader: categoriesLoader,
             element: <CategoriesPage />,
           },
           {
-            path: "category/add",
+            path: "categories/add",
             loader: addCategoryLoader,
             element: <AddCategoryPage />,
           },
           {
-            path: "category/edit/:categoryId",
+            path: "categories/edit/:categoryId",
             loader: editCategoryLoader,
             element: <EditCategoryPage />,
           },
           {
-            path: "category/trash",
+            path: "categories/trash",
             loader: deletedCategoriesLoader,
             element: <TrashCategoriesPage />,
+          },
+          {
+            path: "contacts",
+            loader: contactsLoader,
+            element: <ContactsPage />,
           },
         ],
       },

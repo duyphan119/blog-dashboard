@@ -1,37 +1,34 @@
-import { BlogResponse } from "@/api/blog.api";
-import { RootCategoriesResponse } from "@/api/category.api";
+import { Blog } from "@/api/blog.api";
+import { Category } from "@/api/category.api";
 import { Paper } from "@/components";
 import { BlogForm } from "@/components/forms";
 import { useDocumentTitle } from "@/hooks";
+import { ROUTES } from "@/utils/routes";
+import { TITLES } from "@/utils/titles";
 import { FC } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 
 type Props = {};
 
 const EditBlogPage: FC<Props> = () => {
-  useDocumentTitle("Sửa bài viết");
+  useDocumentTitle(TITLES.UPDATE_BLOG);
 
-  const [data1, data2] = useLoaderData() as [
-    RootCategoriesResponse,
-    BlogResponse
-  ];
-  const categories = data1?.rootCategories ?? [];
-  const blog = data2?.blog ?? null;
+  const [categories, blog] = useLoaderData() as [Category[], Blog | null];
   if (!blog) return <>404</>;
-  const title = (
-    <div className="flex justify-between items-center">
-      <div className="">Sửa bài viết</div>
-      <Link
-        to={`/blog/preview/${blog._id}`}
-        className="px-4 py-1 bg-purple text-white rounded-sm font-normal text-sm"
-        title="Xem trước bài viết"
-      >
-        Xem trước
-      </Link>
-    </div>
-  );
+
   return (
-    <Paper title={title}>
+    <Paper
+      title={TITLES.UPDATE_BLOG}
+      rightTitle={
+        <Link
+          to={`${ROUTES.PREVIEW_BLOG}/${blog._id}`}
+          className="px-4 py-1 bg-purple text-white rounded-sm font-normal text-sm"
+          title={TITLES.PREVIEW_BLOG}
+        >
+          Xem trước
+        </Link>
+      }
+    >
       <BlogForm categories={categories} item={blog} />
     </Paper>
   );

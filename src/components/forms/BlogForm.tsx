@@ -20,6 +20,7 @@ import { useMutation } from "@apollo/client";
 import { toastError, toastSuccess } from "@/config/toastify";
 import { selectAccessToken } from "@/redux/slice/auth.slice";
 import { useAppSelector } from "@/redux/hooks";
+import { MESSAGE_FAIL, MESSAGE_SUCCESS } from "@/utils/message";
 
 type Props = {
   categories: Category[];
@@ -47,7 +48,7 @@ const BlogForm: FC<Props> = ({ categories, item }) => {
   const [thumbnail, setThumbnail] = useState(item?.thumbnail ?? "");
   const [open, setOpen] = useState(false);
 
-  const initialValues = useMemo<CreateBlogDTO>(
+  const defaultValues = useMemo<CreateBlogDTO>(
     () => ({
       title: item?.title ?? "",
       thumbnail: item?.thumbnail ?? "",
@@ -65,7 +66,7 @@ const BlogForm: FC<Props> = ({ categories, item }) => {
     getValues,
     setValue,
   } = useForm<CreateBlogDTO>({
-    defaultValues: initialValues,
+    defaultValues,
   });
 
   const handleSelectCategories = (ids: string[]) => {
@@ -90,45 +91,31 @@ const BlogForm: FC<Props> = ({ categories, item }) => {
         },
       });
     }
-    // setSubmitLoading(true);
-    // try {
-    //   const response = await (item
-    //     ? blogApi.updateOne(item.id, formData)
-    //     : blogApi.createOne(formData));
-    //   const { data } = response.data;
-    //   if (data) {
-    //     reset(initialValues);
-    //     toastSuccess(item ? "Sửa thành công" : "Thêm thành công");
-    //   }
-    // } catch (error) {
-    // } finally {
-    //   setSubmitLoading(false);
-    // }
   };
 
   useEffect(() => {
     if (dataCreated.data?.createBlog) {
-      reset(initialValues);
-      toastSuccess("Thêm thành công");
+      reset(defaultValues);
+      toastSuccess(MESSAGE_SUCCESS.CREATE);
     }
   }, [dataCreated.data]);
 
   useEffect(() => {
     if (dataUpdated.data?.updateBlog) {
-      reset(initialValues);
-      toastSuccess("Sửa thành công");
+      reset(defaultValues);
+      toastSuccess(MESSAGE_SUCCESS.UPDATE);
     }
   }, [dataUpdated.data]);
 
   useEffect(() => {
     if (dataCreated.error) {
-      toastError("Thêm không thành công");
+      toastError(MESSAGE_FAIL.CREATE);
     }
   }, [dataCreated.error]);
 
   useEffect(() => {
     if (dataUpdated.error) {
-      toastError("Sửa không thành công");
+      toastError(MESSAGE_FAIL.UPDATE);
     }
   }, [dataUpdated.error]);
 
@@ -210,7 +197,7 @@ const BlogForm: FC<Props> = ({ categories, item }) => {
       <div className="col-span-12">
         <FooterForm
           submitLoading={loading}
-          onCancel={() => reset(initialValues)}
+          onCancel={() => reset(defaultValues)}
         />
       </div>
     </form>

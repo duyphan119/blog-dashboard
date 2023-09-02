@@ -1,4 +1,4 @@
-import { PROFILE } from "@/api/auth.api";
+import { PROFILE, ProfileResponse } from "@/api/auth.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { logout, setAuthor } from "@/redux/slice/auth.slice";
 import { useQuery } from "@apollo/client";
@@ -11,7 +11,7 @@ type Props = {
 const AuthLayout: FC<Props> = ({ children }) => {
   const appDispatch = useAppDispatch();
 
-  const { data, error } = useQuery(PROFILE);
+  const { data, error } = useQuery<ProfileResponse>(PROFILE);
 
   useEffect(() => {
     if (data) {

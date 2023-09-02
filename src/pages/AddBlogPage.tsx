@@ -1,21 +1,20 @@
-import { RootCategoriesResponse } from "@/api/category.api";
+import { Category } from "@/api/category.api";
 import { Paper } from "@/components";
 import { BlogForm } from "@/components/forms";
 import { useDocumentTitle } from "@/hooks";
+import { TITLES } from "@/utils/titles";
 import { FC } from "react";
 import { useLoaderData } from "react-router-dom";
 
 type Props = {};
 
 const AddBlogPage: FC<Props> = () => {
-  useDocumentTitle("Thêm mới bài viết");
+  useDocumentTitle(TITLES.CREATE_BLOG);
 
-  const data = useLoaderData() as RootCategoriesResponse | null;
-
-  const categories = data?.rootCategories ?? [];
+  const categories = useLoaderData() as Category[];
 
   return (
-    <Paper title="Thêm mới bài viết">
+    <Paper title={TITLES.CREATE_BLOG}>
       <BlogForm categories={categories} item={null} />
     </Paper>
   );

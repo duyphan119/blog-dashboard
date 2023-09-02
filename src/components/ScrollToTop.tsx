@@ -1,5 +1,6 @@
 import { GoMoveToTop } from "react-icons/go";
 import { FC, useEffect, useState } from "react";
+import { TITLES } from "@/utils/titles";
 type Props = {};
 
 const ScrollToTop: FC<Props> = () => {
@@ -25,7 +26,7 @@ const ScrollToTop: FC<Props> = () => {
       <button
         type="button"
         onClick={handleClick}
-        title="Lên đầu trang"
+        title={TITLES.SCROLL_TO_TOP}
         className="bg-navy text-white p-2 outline-none opacity-50 cursor-pointer"
       >
         <GoMoveToTop />

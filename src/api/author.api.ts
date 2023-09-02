@@ -8,8 +8,6 @@ export type Author = {
   avatar: string;
 };
 
-const name = "author";
-
 const authorApi = {};
 
 export default authorApi;

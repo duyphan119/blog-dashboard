@@ -6,19 +6,20 @@ import { Input } from "@/components/inputs";
 import { useDocumentTitle } from "@/hooks";
 import { useAppSelector } from "@/redux/hooks";
 import { selectAuthor } from "@/redux/slice/auth.slice";
+import { TITLES } from "@/utils/titles";
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 type Props = {};
 
 const ProfilePage: FC<Props> = () => {
-  useDocumentTitle("Thông tin tài khoản");
+  useDocumentTitle(TITLES.PROFILE);
 
   // const appDispatch = useAppDispatch();
 
   const profile = useAppSelector(selectAuthor) as Author;
 
-  const initialValues: UpdateProfileDTO = {
+  const defaultValues: UpdateProfileDTO = {
     name: profile.name,
   };
 
@@ -28,7 +29,7 @@ const ProfilePage: FC<Props> = () => {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<UpdateProfileDTO>({
-    defaultValues: initialValues,
+    defaultValues,
   });
 
   console.log("profile", profile);
@@ -46,7 +47,7 @@ const ProfilePage: FC<Props> = () => {
   };
 
   return (
-    <Paper title="Thông tin tài khoản">
+    <Paper title={TITLES.PROFILE}>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-12 gap-4"
@@ -65,7 +66,7 @@ const ProfilePage: FC<Props> = () => {
         </div>
         <div className="col-span-12">
           <FooterForm
-            onCancel={() => reset(initialValues)}
+            onCancel={() => reset(defaultValues)}
             submitLoading={isSubmitting}
           />
         </div>

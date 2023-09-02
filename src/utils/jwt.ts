@@ -1,7 +1,7 @@
 import { JwtPayload } from "@/types";
 import jwtDecode from "jwt-decode";
 import Cookies from "universal-cookie";
-import { ACCESS_TOKEN_KEY } from "@/constants";
+import { ACCESS_TOKEN_KEY } from "@/utils/constants";
 
 export const decodeToken = (token: string): JwtPayload => {
   const payload: JwtPayload = jwtDecode(token);

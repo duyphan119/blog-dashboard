@@ -26,11 +26,7 @@ export const categoriesLoader = async ({ request }: LoaderFunctionArgs) => {
     }
   }
 
-  try {
-    const { data } = await categoryApi.categories(obj);
-    if (data) return data;
-  } catch (error) {}
-  return null;
+  return await categoryApi.categories(obj);
 };
 export const deletedCategoriesLoader = async ({
   request,
@@ -59,36 +55,22 @@ export const deletedCategoriesLoader = async ({
     }
   }
 
-  try {
-    const { data } = await categoryApi.deletedCategories(obj);
-    if (data) return data;
-  } catch (error) {}
-  return null;
+  return await categoryApi.deletedCategories(obj);
 };
 
 export const addCategoryLoader = async (_: LoaderFunctionArgs) => {
-  try {
-    const { data } = await categoryApi.rootCategories();
-
-    if (data) return data;
-  } catch (error) {}
-  return null;
+  return await categoryApi.rootCategories();
 };
 
 export const editCategoryLoader = async ({
   params: { categoryId },
 }: LoaderFunctionArgs) => {
   const data = [];
-  try {
-    const { data: data1 } = await categoryApi.rootCategories();
-    if (data1) {
-      data.push(data1);
-    }
-    if (categoryId) {
-      const { data: data2 } = await categoryApi.category(categoryId);
-
-      if (data2) data.push(data2);
-    }
-  } catch (error) {}
+  const data1 = await categoryApi.rootCategories();
+  data.push(data1);
+  if (categoryId) {
+    const data2 = await categoryApi.category(categoryId);
+    data.push(data2);
+  }
   return data;
 };

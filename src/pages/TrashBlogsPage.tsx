@@ -2,20 +2,19 @@ import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
 import { FC, useMemo } from "react";
 
-import { Blog, blogApi, DeletedBlogsResponse } from "@/api/blog.api";
+import { Blog, blogApi, Blogs } from "@/api/blog.api";
 import { Paper } from "@/components";
 import { Table } from "@/components/tables";
 import { useDocumentTitle } from "@/hooks";
 import { useLoaderData } from "react-router-dom";
+import { TITLES } from "@/utils/titles";
+import { DATE_TIME_FORMAT } from "@/utils/constants";
 
 type Props = {};
 
 const TrashBlogsPage: FC<Props> = () => {
-  useDocumentTitle("Quản lý bài viết đã xoá");
-  const data = useLoaderData() as DeletedBlogsResponse | null;
-
-  const rows = data?.deletedBlogs.blogs ?? [];
-  const count = data?.deletedBlogs.count ?? 0;
+  useDocumentTitle(TITLES.TRASH_BLOGS);
+  const { count, blogs: rows } = useLoaderData() as Blogs;
 
   const columns = useMemo<ColumnDef<Blog>[]>(
     () => [
@@ -42,7 +41,7 @@ const TrashBlogsPage: FC<Props> = () => {
         accessorKey: "createdAt",
         header: "Ngày tạo",
         cell: ({ row }) =>
-          moment(row.original.createdAt).format("DD-MM-YYYY HH:mm:ss"),
+          moment(row.original.createdAt).format(DATE_TIME_FORMAT),
         enableSorting: true,
       },
     ],
@@ -50,16 +49,19 @@ const TrashBlogsPage: FC<Props> = () => {
   );
 
   return (
-    <Paper title="Danh sách bài viết đã xoá">
+    <Paper title={TITLES.TRASH_BLOGS}>
       <Table
         rows={rows}
         columns={columns}
         onDelete={blogApi.delete}
         onRestore={blogApi.restore}
         count={count}
-        isTrashPage={true}
+        restoreAction={true}
         hasRowSelection={true}
         sortable={true}
+        hasDeleteBtn={true}
+        hasSearch={true}
+        hasRestoreBtn={true}
       />
     </Paper>
   );
