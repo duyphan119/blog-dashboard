@@ -8,7 +8,7 @@ import { BiSolidCategory, BiSolidContact } from "react-icons/bi";
 import { BsNewspaper } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import { FiLogOut } from "react-icons/fi";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 type Props = {
   open: boolean;
@@ -23,8 +23,6 @@ type Item = {
 };
 
 const Sidebar: FC<Props> = ({ open }) => {
-  const location = useLocation();
-
   const navigate = useNavigate();
 
   const appDispatch = useAppDispatch();
