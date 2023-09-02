@@ -27,13 +27,13 @@ const Content = ({ children }: Props) => {
   return (
     <div className="flex">
       <Sidebar open={sidebarOpen} />
-      <div
-        className={`relative overflow-y-auto flex flex-col bg-green-200 min-h-screen flex-1 transition-all duration-500 ${
-          sidebarOpen ? "ml-[286px]" : "ml-0"
-        }`}
-      >
-        <Header onToggleSidebar={handleToggleSidebar} />
-        <main className="p-6 bg-lightgrey flex-1">
+      <div className="relative overflow-y-auto flex flex-col min-h-screen flex-1">
+        <Header onToggleSidebar={handleToggleSidebar} open={sidebarOpen} />
+        <main
+          className={`p-6 bg-lightgrey transition-all duration-500 flex-1 ${
+            sidebarOpen ? "md:ml-[286px]" : "ml-0"
+          }`}
+        >
           <div className="h-full">{children}</div>
         </main>
       </div>

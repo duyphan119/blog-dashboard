@@ -73,7 +73,7 @@ const router = createBrowserRouter([
             element: <BlogPreviewPage />,
           },
           {
-            path: "blogs/trash",
+            path: "trash/blogs",
             loader: deletedBlogsLoader,
             element: <TrashBlogsPage />,
           },
@@ -93,7 +93,7 @@ const router = createBrowserRouter([
             element: <EditCategoryPage />,
           },
           {
-            path: "categories/trash",
+            path: "trash/categories",
             loader: deletedCategoriesLoader,
             element: <TrashCategoriesPage />,
           },

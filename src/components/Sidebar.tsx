@@ -8,7 +8,7 @@ import { BiSolidCategory, BiSolidContact } from "react-icons/bi";
 import { BsNewspaper } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import { FiLogOut } from "react-icons/fi";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
   open: boolean;
@@ -119,19 +119,23 @@ const Sidebar: FC<Props> = ({ open }) => {
                   <ul className="flex flex-col mt-2 gap-0.5">
                     {item.children.map((child, indexChild) => {
                       const Icon = child.icon || Fragment;
-                      const isActive = child.href
-                        ? location.pathname.startsWith(child.href)
-                        : false;
-                      const linkClassName = `flex items-center gap-2 hover:bg-lightgrey hover:text-navy p-2 hover:rounded-sm w-full ${
-                        isActive ? "text-navy bg-lightgrey" : ""
-                      }`;
+
+                      const linkClassName =
+                        "flex items-center gap-2 hover:bg-lightgrey hover:text-navy p-2 hover:rounded-sm w-full";
                       return (
                         <li key={indexChild}>
                           {child.href ? (
-                            <Link to={child.href} className={linkClassName}>
+                            <NavLink
+                              to={child.href}
+                              className={({ isActive }) =>
+                                `${linkClassName} ${
+                                  isActive ? "text-navy bg-lightgrey" : ""
+                                }`
+                              }
+                            >
                               <Icon />
                               {child.label}
-                            </Link>
+                            </NavLink>
                           ) : (
                             <button
                               className={linkClassName}

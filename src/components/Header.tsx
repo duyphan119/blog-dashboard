@@ -8,12 +8,17 @@ import NotificationIcon from "./NotificationIcon";
 
 type Props = {
   onToggleSidebar: () => void;
+  open?: boolean;
 };
 
-const Header: FC<Props> = ({ onToggleSidebar }) => {
+const Header: FC<Props> = ({ onToggleSidebar, open }) => {
   const profile = useAppSelector(selectAuthor);
   return (
-    <header className="px-6 bg-white shadow z-[9999] flex items-center justify-between gap-4 h-20">
+    <header
+      className={`px-6 bg-white shadow z-[9998] flex items-center justify-between gap-4 transition-all duration-500 h-20 ${
+        open ? "ml-[286px]" : "ml-0"
+      }`}
+    >
       <div className="left flex items-center gap-4 flex-1">
         <span className="cursor-pointer text-2xl" onClick={onToggleSidebar}>
           <GrMenu />
