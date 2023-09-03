@@ -62,6 +62,16 @@ const NotificationIcon: FC<Props> = () => {
     [notifications]
   );
 
+  const handleReadNotifications = async (idList: string[]) => {
+    const data = await api.notification.readNotifications(idList);
+    if (data) {
+      setNotifications((prevState) =>
+        prevState.map((item) =>
+          idList.includes(item._id) ? { ...item, seen: true } : item
+        )
+      );
+    }
+  };
   return (
     <>
       <div className="relative" ref={ref}>
@@ -72,7 +82,10 @@ const NotificationIcon: FC<Props> = () => {
           />
         </BadgeNotification>
         {isComponentVisible ? (
-          <NotificationList notifications={notifications} />
+          <NotificationList
+            notifications={notifications}
+            onRead={handleReadNotifications}
+          />
         ) : null}
       </div>
     </>

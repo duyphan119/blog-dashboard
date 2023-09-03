@@ -1,5 +1,5 @@
 import client from "@/config/apolloClient";
-import { ApolloQueryResult, gql } from "@apollo/client";
+import { ApolloQueryResult, FetchResult, gql } from "@apollo/client";
 
 export type Notification = {
   _id: string;
@@ -33,6 +33,10 @@ export type NotificationsInput = {
   notificationsInput: NotificationParams;
 };
 
+export type ReadNotificationsResponse = {
+  readNotifications: boolean;
+};
+
 export const NOTIFICATIONS = gql`
   query Notifications($notificationsInput: NotificationsInput) {
     notifications(notificationsInput: $notificationsInput) {
@@ -47,6 +51,12 @@ export const NOTIFICATIONS = gql`
       totalPages
       count
     }
+  }
+`;
+
+export const READ_NOTIFICATIONS = gql`
+  mutation ReadNotifications($idList: [String]) {
+    readNotifications(idList: $idList)
   }
 `;
 
@@ -71,5 +81,16 @@ export const notificationApi = {
       count: 0,
       totalPages: 0,
     };
+  },
+  readNotifications: async (idList: string[]): Promise<boolean> => {
+    try {
+      const { data }: FetchResult<ReadNotificationsResponse> =
+        await client.mutate({
+          mutation: READ_NOTIFICATIONS,
+          variables: { idList },
+        });
+      if (data) return data.readNotifications;
+    } catch (error) {}
+    return false;
   },
 };

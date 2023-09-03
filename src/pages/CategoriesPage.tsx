@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
-import { FC, useMemo } from "react";
+import { FC, useCallback, useMemo } from "react";
 
 import { Categories, Category, categoryApi } from "@/api/category.api";
 import { Paper } from "@/components";
@@ -8,7 +8,13 @@ import { Table } from "@/components/tables";
 import { useDocumentTitle } from "@/hooks";
 import { useLoaderData } from "react-router-dom";
 import { TITLES } from "@/utils/titles";
-import { DATE_TIME_FORMAT } from "@/utils/constants";
+import {
+  DATE_TIME_FORMAT,
+  MD_SCREEN_QUERY,
+  SM_SCREEN_QUERY,
+} from "@/utils/constants";
+import { useMediaQuery } from "react-responsive";
+import { ROUTES } from "@/utils/routes";
 
 type Props = {};
 
@@ -17,16 +23,14 @@ const CategoriesPage: FC<Props> = () => {
 
   const { count, categories: rows } = useLoaderData() as Categories;
 
-  const columns = useMemo<ColumnDef<Category>[]>(
-    () => [
+  const isSmScreen = useMediaQuery(SM_SCREEN_QUERY);
+  const isMdScreen = useMediaQuery(MD_SCREEN_QUERY);
+
+  const columns = useMemo<ColumnDef<Category>[]>(() => {
+    const example: ColumnDef<Category>[] = [
       {
         accessorKey: "name",
         header: "Tên",
-        enableSorting: true,
-      },
-      {
-        accessorKey: "slug",
-        header: "Slug",
         enableSorting: true,
       },
       {
@@ -42,7 +46,17 @@ const CategoriesPage: FC<Props> = () => {
           moment(row.original.createdAt).format(DATE_TIME_FORMAT),
         enableSorting: true,
       },
-    ],
+    ];
+    if (isMdScreen) {
+      return example;
+    } else if (isSmScreen) {
+      return [example[0], example[example.length - 1]];
+    }
+    return [example[0]];
+  }, [isSmScreen, isMdScreen]);
+
+  const getRowLink = useCallback(
+    (row: Category) => `${ROUTES.CATEGORIES}/edit/${row._id}`,
     []
   );
 
@@ -60,6 +74,7 @@ const CategoriesPage: FC<Props> = () => {
         hasDeleteBtn={true}
         hasSearch={true}
         hasLinkCreate={true}
+        getRowLink={getRowLink}
       />
     </Paper>
   );

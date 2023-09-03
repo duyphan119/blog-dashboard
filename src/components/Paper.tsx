@@ -8,7 +8,7 @@ type Props = {
 
 const Paper: FC<Props> = ({ children, title, rightTitle }) => {
   return (
-    <section className="bg-white rounded-md">
+    <section className="bg-white rounded-md overflow-x-hidden">
       {title ? (
         <>
           <div className="px-4 pt-4 pb-2 flex justify-between items-center">

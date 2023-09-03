@@ -95,9 +95,13 @@ export type UpdateProfileResponse = {
   updateProfile: Author;
 };
 
-export const NEW_ACCESS_TOKEN = gql`
+export type LogoutResponse = {
+  logout: boolean;
+};
+
+export const LOGOUT = gql`
   mutation Mutation {
-    newAccessToken
+    logout
   }
 `;
 
@@ -135,17 +139,25 @@ export const authApi = {
     } catch (error) {}
     return null;
   },
-  updateProfile: (
-    dto: UpdateProfileDTO
-  ): Promise<FetchResult<UpdateProfileResponse>> =>
-    client.mutate({
-      mutation: UPDATE_PROFILE,
-      variables: {
-        updateProfileInput: dto,
-      },
-    }),
-  newAccessToken: (): Promise<FetchResult<{ newAccessToken: string }>> =>
-    client.mutate({
-      mutation: NEW_ACCESS_TOKEN,
-    }),
+  updateProfile: async (dto: UpdateProfileDTO): Promise<Author | null> => {
+    try {
+      const { data }: FetchResult<UpdateProfileResponse> = await client.mutate({
+        mutation: UPDATE_PROFILE,
+        variables: {
+          updateProfileInput: dto,
+        },
+      });
+      if (data) return data.updateProfile;
+    } catch (error) {}
+    return null;
+  },
+  logout: async (): Promise<boolean> => {
+    try {
+      const { data }: FetchResult<LogoutResponse> = await client.mutate({
+        mutation: LOGOUT,
+      });
+      if (data) return data.logout;
+    } catch (error) {}
+    return false;
+  },
 };

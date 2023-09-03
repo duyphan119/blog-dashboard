@@ -89,10 +89,10 @@ const AuthForm: FC<Props> = ({ isRegisterForm }) => {
   }, [dataLogin]);
 
   return (
-    <section className="h-screen px-8 md:px-48">
+    <section className="h-screen px-4">
       <div className="h-full">
-        <div className="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between">
-          <div className="shrink-1 mb-12 grow-0 basis-auto md:mb-0 md:w-9/12 md:shrink-0 lg:w-6/12 xl:w-6/12">
+        <div className="h-full grid grid-cols-11">
+          <div className="lg:col-span-6 hidden lg:flex lg:items-center lg:justify-center">
             <img
               src="https://tecdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
               className="w-full"
@@ -100,44 +100,45 @@ const AuthForm: FC<Props> = ({ isRegisterForm }) => {
             />
           </div>
 
-          <div className="mb-12 md:mb-0 md:w-8/12 lg:w-5/12 xl:w-5/12">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="flex flex-row items-center justify-center lg:justify-start">
-                <p className="mb-0 mr-4 text-lg">Đăng nhập bằng</p>
+          <div className="col-span-11 lg:col-span-5 flex items-center justify-center">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full sm:w-3/4">
+              <div className="flex items-center justify-between">
+                <p className="text-lg">Đăng nhập bằng</p>
+                <div className="flex items-center">
+                  <button
+                    type="button"
+                    data-te-ripple-init
+                    data-te-ripple-color="light"
+                    className="mx-1 h-9 w-9 rounded-full bg-primary uppercase leading-normal text-white bg-facebook flex items-center justify-center text-lg"
+                    title="Đăng nhập bằng Facebook"
+                  >
+                    <BiLogoFacebook />
+                  </button>
+                  <button
+                    type="button"
+                    data-te-ripple-init
+                    data-te-ripple-color="light"
+                    className="mx-1 h-9 w-9 rounded-full bg-primary uppercase leading-normal text-white bg-google flex items-center justify-center text-lg"
+                    title="Đăng nhập bằng Google"
+                  >
+                    <BiLogoGoogle />
+                  </button>
 
-                <button
-                  type="button"
-                  data-te-ripple-init
-                  data-te-ripple-color="light"
-                  className="mx-1 h-9 w-9 rounded-full bg-primary uppercase leading-normal text-white bg-facebook flex items-center justify-center text-lg"
-                  title="Đăng nhập bằng Facebook"
-                >
-                  <BiLogoFacebook />
-                </button>
-                <button
-                  type="button"
-                  data-te-ripple-init
-                  data-te-ripple-color="light"
-                  className="mx-1 h-9 w-9 rounded-full bg-primary uppercase leading-normal text-white bg-google flex items-center justify-center text-lg"
-                  title="Đăng nhập bằng Google"
-                >
-                  <BiLogoGoogle />
-                </button>
-
-                <button
-                  type="button"
-                  data-te-ripple-init
-                  data-te-ripple-color="light"
-                  className="mx-1 h-9 w-9 rounded-full bg-primary uppercase leading-normal text-white bg-github flex items-center justify-center text-lg"
-                  title="Đăng nhập bằng Github"
-                >
-                  <BiLogoGithub />
-                </button>
+                  <button
+                    type="button"
+                    data-te-ripple-init
+                    data-te-ripple-color="light"
+                    className="mx-1 h-9 w-9 rounded-full bg-primary uppercase leading-normal text-white bg-github flex items-center justify-center text-lg"
+                    title="Đăng nhập bằng Github"
+                  >
+                    <BiLogoGithub />
+                  </button>
+                </div>
               </div>
 
               <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
                 <p className="mx-4 mb-0 text-center font-semibold dark:text-white">
-                  Or
+                  Hoặc
                 </p>
               </div>
               {isRegisterForm ? (
@@ -205,7 +206,7 @@ const AuthForm: FC<Props> = ({ isRegisterForm }) => {
               <div className="text-center lg:text-left">
                 <button
                   type="submit"
-                  className="inline-block rounded bg-primary px-7 pb-2.5 pt-3 text-sm font-medium uppercase leading-normal text-white bg-navy min-w-[160px]"
+                  className="inline-block rounded bg-primary px-7 pb-2.5 pt-3 text-sm font-medium uppercase leading-normal text-white bg-navy min-w-[160px] w-full"
                   disabled={loading}
                 >
                   Đăng {isRegisterForm ? "ký" : "nhập"}

@@ -8,9 +8,10 @@ import { Link } from "react-router-dom";
 
 type Props = {
   notifications: Notification[];
+  onRead: (idList: string[]) => Promise<void>;
 };
 
-const NotificationList: FC<Props> = ({ notifications }) => {
+const NotificationList: FC<Props> = ({ notifications, onRead }) => {
   const getHref = useCallback((notification: Notification) => {
     const { type, refId } = notification;
     switch (type) {
@@ -43,6 +44,7 @@ const NotificationList: FC<Props> = ({ notifications }) => {
               <li
                 className="hover:bg-teal hover:text-white"
                 key={notification._id}
+                onClick={() => onRead([notification._id])}
               >
                 {href === "" ? (
                   <p className={className}>{content}</p>

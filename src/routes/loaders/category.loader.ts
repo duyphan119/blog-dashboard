@@ -1,4 +1,5 @@
 import { categoryApi, CategoryParams } from "@/api/category.api";
+import { DEFAULT_LIMIT } from "@/utils/constants";
 import { LoaderFunctionArgs } from "react-router-dom";
 
 export const categoriesLoader = async ({ request }: LoaderFunctionArgs) => {
@@ -24,6 +25,9 @@ export const categoriesLoader = async ({ request }: LoaderFunctionArgs) => {
       obj.sortBy = sortBy;
       obj.sortType = sortType === "asc" ? "asc" : "desc";
     }
+  }
+  if (!obj.limit) {
+    obj.limit = DEFAULT_LIMIT;
   }
 
   return await categoryApi.categories(obj);
@@ -53,6 +57,9 @@ export const deletedCategoriesLoader = async ({
       obj.sortBy = sortBy;
       obj.sortType = sortType === "asc" ? "asc" : "desc";
     }
+  }
+  if (!obj.limit) {
+    obj.limit = DEFAULT_LIMIT;
   }
 
   return await categoryApi.deletedCategories(obj);

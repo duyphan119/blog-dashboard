@@ -1,18 +1,6 @@
-export const IS_NEXT_RESPONSE_EMPTY = {
-  rows: [],
-  isNext: false,
-};
-export const PAGINATION_RESPONSE_EMPTY = {
-  rows: [],
-  count: 0,
-  total_pages: 0,
-};
 export const DEFAULT_LIMIT = 10;
 export const DEFAULT_PAGE = 1;
-export const HOME_PAGE = {
-  LIMIT_NEWS: 4,
-  LIMIT_VANBAN: 10,
-};
+
 export const PLACEHOLDER_THUMBNAIL = "/images/placeholder-thumbnail.jfif";
 
 export const ACCESS_TOKEN_KEY = "access_token";
@@ -26,3 +14,5 @@ export const WS_GRAPHQL_SERVER =
     ? `${import.meta.env.VITE_WS_GRAPHQL_SERVER}`
     : "ws://localhost:4000/graphql";
 export const DATE_TIME_FORMAT = "DD-MM-YYYY HH:mm:ss";
+export const SM_SCREEN_QUERY = { query: "(min-width: 640px)" };
+export const MD_SCREEN_QUERY = { query: "(min-width: 768px)" };

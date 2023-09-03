@@ -15,8 +15,8 @@ const Header: FC<Props> = ({ onToggleSidebar, open }) => {
   const profile = useAppSelector(selectAuthor);
   return (
     <header
-      className={`px-6 bg-white shadow z-[9998] flex items-center justify-between gap-4 transition-all duration-500 h-20 ${
-        open ? "ml-[286px]" : "ml-0"
+      className={`px-6 bg-white shadow z-[1147] flex items-center justify-between gap-4 transition-all duration-500 h-20 ${
+        open ? "md:ml-[286px]" : "ml-0"
       }`}
     >
       <div className="left flex items-center gap-4 flex-1">

@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useCallback } from "react";
 import { useDocumentTitle } from "@/hooks";
 import { Paper, Widget } from "@/components";
 import { Link, useLoaderData } from "react-router-dom";
@@ -72,7 +72,10 @@ const HomePage: FC<Props> = () => {
     return [example[0]];
   }, [isSmScreen, isMdScreen]);
 
-  const getRowLink = (row: Blog) => `${ROUTES.PREVIEW_BLOG}/${row._id}`;
+  const getRowLink = useCallback(
+    (row: Blog) => `${ROUTES.PREVIEW_BLOG}/${row._id}`,
+    []
+  );
 
   return (
     <div className="grid grid-cols-12 gap-4">

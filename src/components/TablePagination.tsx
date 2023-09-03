@@ -35,45 +35,47 @@ const TablePagination: FC<Props> = ({
   };
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-4">
-      <button
-        className="border rounded p-1 hover:bg-navy disabled:bg-white hover:text-white disabled:text-navy"
-        onClick={() => handlePaginationChange(1, pageSize)}
-        disabled={pageIndex === 1}
-        title="Đi tới trang đầu tiên"
-      >
-        {"<<"}
-      </button>
-      <button
-        className="border rounded p-1 hover:bg-navy disabled:bg-white hover:text-white disabled:text-navy"
-        onClick={() => handlePaginationChange(pageIndex - 1, pageSize)}
-        disabled={pageIndex === 1}
-        title="Đi tới trang trước"
-      >
-        {"<"}
-      </button>
-      <button
-        className="border rounded p-1 hover:bg-navy disabled:bg-white hover:text-white disabled:text-navy"
-        onClick={() => handlePaginationChange(pageIndex + 1, pageSize)}
-        disabled={pageIndex === pageCount}
-        title="Đi tới trang sau"
-      >
-        {">"}
-      </button>
-      <button
-        className="border rounded p-1 hover:bg-navy disabled:bg-white hover:text-white disabled:text-navy"
-        onClick={() => handlePaginationChange(pageCount, pageSize)}
-        disabled={pageIndex === pageCount}
-        title="Đi tới trang cuối cùng"
-      >
-        {">>"}
-      </button>
-      <span className="flex items-center gap-1">
+    <div className="flex items-center justify-center flex-col sm:flex-row gap-2 mt-4">
+      <div className="flex items-center justify-center gap-2">
+        <button
+          className="border rounded p-1 hover:bg-navy disabled:bg-white hover:text-white disabled:text-navy"
+          onClick={() => handlePaginationChange(1, pageSize)}
+          disabled={pageIndex === 1}
+          title="Đi tới trang đầu tiên"
+        >
+          {"<<"}
+        </button>
+        <button
+          className="border rounded p-1 hover:bg-navy disabled:bg-white hover:text-white disabled:text-navy"
+          onClick={() => handlePaginationChange(pageIndex - 1, pageSize)}
+          disabled={pageIndex === 1}
+          title="Đi tới trang trước"
+        >
+          {"<"}
+        </button>
+        <button
+          className="border rounded p-1 hover:bg-navy disabled:bg-white hover:text-white disabled:text-navy"
+          onClick={() => handlePaginationChange(pageIndex + 1, pageSize)}
+          disabled={pageIndex === pageCount}
+          title="Đi tới trang sau"
+        >
+          {">"}
+        </button>
+        <button
+          className="border rounded p-1 hover:bg-navy disabled:bg-white hover:text-white disabled:text-navy"
+          onClick={() => handlePaginationChange(pageCount, pageSize)}
+          disabled={pageIndex === pageCount}
+          title="Đi tới trang cuối cùng"
+        >
+          {">>"}
+        </button>
+      </div>
+      <div className="flex items-center gap-1">
         <div>Trang</div>
         <span>
           <strong>{pageIndex}</strong> / {pageCount}
         </span>
-      </span>
+      </div>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -91,7 +93,9 @@ const TablePagination: FC<Props> = ({
         }}
         className="flex items-center gap-1"
       >
-        | Đi tới trang:
+        <div className="">
+          <span className="sm:inline hidden">|</span> Đi tới trang:
+        </div>
         <input
           defaultValue={pageIndex}
           ref={pageNumRef}

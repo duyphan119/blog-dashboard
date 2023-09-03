@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/redux/hooks";
 import { selectAuthor } from "@/redux/slice/auth.slice";
 import { ROUTES } from "@/utils/routes";
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, ReactNode, useEffect, useState, useCallback } from "react";
 import { useMediaQuery } from "react-responsive";
 import { Navigate, Outlet } from "react-router-dom";
 import { Header, Sidebar } from "../components";
@@ -20,6 +20,10 @@ const Content = ({ children }: Props) => {
     setSidebarOpen((state) => !state);
   };
 
+  const handleClose = useCallback(() => {
+    setSidebarOpen(false);
+  }, []);
+
   useEffect(() => {
     setSidebarOpen(isLgScreen);
   }, [isLgScreen]);
@@ -27,11 +31,11 @@ const Content = ({ children }: Props) => {
   if (!profile) return <Navigate to={ROUTES.LOGIN} />;
   return (
     <div className="flex">
-      <Sidebar open={sidebarOpen} />
+      <Sidebar open={sidebarOpen} onClose={handleClose} />
       <div className="relative overflow-y-auto flex flex-col min-h-screen flex-1">
         <Header onToggleSidebar={handleToggleSidebar} open={sidebarOpen} />
         <main
-          className={`p-6 bg-lightgrey transition-all duration-500 flex-1 ${
+          className={`sm:p-6 p-2 bg-lightgrey transition-all duration-500 flex-1 ${
             sidebarOpen ? "md:ml-[286px]" : "ml-0"
           }`}
         >

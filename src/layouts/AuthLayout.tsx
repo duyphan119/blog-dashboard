@@ -2,7 +2,7 @@ import { PROFILE, ProfileResponse } from "@/api/auth.api";
 import { useAppDispatch } from "@/redux/hooks";
 import { logout, setAuthor } from "@/redux/slice/auth.slice";
 import { useQuery } from "@apollo/client";
-import { FC, ReactNode, useEffect } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 
 type Props = {
   children?: ReactNode;
@@ -13,6 +13,8 @@ const AuthLayout: FC<Props> = ({ children }) => {
 
   const { data, error } = useQuery<ProfileResponse>(PROFILE);
 
+  const [fetched, setFetched] = useState(false);
+
   useEffect(() => {
     if (data) {
       if (data.profile) {
@@ -22,8 +24,10 @@ const AuthLayout: FC<Props> = ({ children }) => {
     if (error) {
       appDispatch(logout());
     }
+    setFetched(true);
   }, [data, error]);
 
+  if (!fetched) return <></>;
   return <>{children}</>;
 };
 

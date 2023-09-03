@@ -1,11 +1,14 @@
+import api from "@/api";
 import { UpdateProfileDTO } from "@/api/auth.api";
 import { Author } from "@/api/author.api";
 import { Paper } from "@/components";
 import { FooterForm } from "@/components/forms";
 import { Input } from "@/components/inputs";
+import { toastSuccess } from "@/config/toastify";
 import { useDocumentTitle } from "@/hooks";
-import { useAppSelector } from "@/redux/hooks";
-import { selectAuthor } from "@/redux/slice/auth.slice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectAuthor, setAuthor } from "@/redux/slice/auth.slice";
+import { MESSAGE_SUCCESS } from "@/utils/message";
 import { TITLES } from "@/utils/titles";
 import { FC } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,7 +18,7 @@ type Props = {};
 const ProfilePage: FC<Props> = () => {
   useDocumentTitle(TITLES.PROFILE);
 
-  // const appDispatch = useAppDispatch();
+  const appDispatch = useAppDispatch();
 
   const profile = useAppSelector(selectAuthor) as Author;
 
@@ -36,13 +39,11 @@ const ProfilePage: FC<Props> = () => {
 
   const onSubmit: SubmitHandler<UpdateProfileDTO> = async (values) => {
     try {
-      console.log(values);
-      // const response = await authApi.updateProfile(values);
-      // const { data } = response.data;
-      // if (data) {
-      //   toastSuccess("Cập nhật thành công");
-      //   appDispatch(setAuthor(data));
-      // }
+      const data = await api.auth.updateProfile(values);
+      if (data) {
+        toastSuccess(MESSAGE_SUCCESS.UPDATE);
+        appDispatch(setAuthor(data));
+      }
     } catch (error) {}
   };
 

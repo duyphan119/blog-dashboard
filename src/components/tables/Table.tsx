@@ -1,5 +1,6 @@
 import { toastError, toastSuccess } from "@/config/toastify";
 import { useQueryString } from "@/hooks";
+import { DEFAULT_LIMIT, DEFAULT_PAGE } from "@/utils/constants";
 import {
   MESSAGE_CONFIRM,
   MESSAGE_FAIL,
@@ -23,7 +24,7 @@ import {
   AiTwotoneEdit,
 } from "react-icons/ai";
 import { FaSearch, FaTrashRestoreAlt } from "react-icons/fa";
-import { VscPreview } from "react-icons/vsc";
+import { BsEye } from "react-icons/bs";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IndeterminateCheckbox } from "../inputs";
 import TablePagination from "../TablePagination";
@@ -73,15 +74,14 @@ const Table = ({
   hasSearch,
   getRowLink,
 }: Props) => {
-  const hasActions = onDelete || onRestore || onSoftDelete ? true : false;
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { generateQueryString, getNumber, getString } = useQueryString();
   const sortBy = getString("sortBy", "");
   const sortType = getString("sortType", "");
   const keyword = getString("keyword", "");
-  const pageIndex = getNumber("pageIndex", 1);
-  const pageSize = getNumber("pageSize", 10);
+  const pageIndex = getNumber("pageIndex", DEFAULT_PAGE);
+  const pageSize = getNumber("pageSize", DEFAULT_LIMIT);
   const searchRef = useRef<HTMLInputElement | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [restoreLoading, setRestoreLoading] = useState(false);
@@ -154,7 +154,13 @@ const Table = ({
         ),
       });
     }
-    if (hasActions) {
+    if (
+      restoreAction ||
+      deleteAction ||
+      softDeleteAction ||
+      previewAction ||
+      editAction
+    ) {
       result.push({
         header: "Thao tác",
         cell: ({ row }) => (
@@ -184,7 +190,7 @@ const Table = ({
                 className="text-xl text-purple"
                 title={TITLES.PREVIEW_RECORD}
               >
-                <VscPreview />
+                <BsEye />
               </Link>
             ) : null}
             {softDeleteAction ? (
@@ -220,7 +226,6 @@ const Table = ({
     softDeleteAction,
     previewAction,
     editAction,
-    hasActions,
     hasRowSelection,
   ]);
 
@@ -333,13 +338,14 @@ const Table = ({
   return (
     <>
       {hideTopActions ? null : (
-        <div className="flex gap-4 items-center">
+        <div className="flex sm:flex-row flex-col gap-4 items-center">
           {hasSearch ? (
             <form
               onSubmit={handleSubmitSearch}
-              className="flex-1 pl-2 flex items-center border-black border rounded-sm overflow-hidden"
+              className="flex-1 w-full sm:w-auto pl-2 flex items-center border-black border rounded-sm overflow-hidden"
             >
               <FaSearch className="text-black" />
+
               <input
                 type="search"
                 className="w-full outline-none p-2"
@@ -349,51 +355,57 @@ const Table = ({
               />
             </form>
           ) : null}
-          {hasRestoreBtn ? (
-            <button
-              className={`uppercase bg-teal text-white px-6 py-2 rounded-sm`}
-              type="button"
-              title={TITLES.RESTORE_RECORDS}
-              disabled={countSelectedRows === 0}
-              onClick={() => handleRestore(selectedRowIndexes, undefined, true)}
-            >
-              {restoreLoading ? (
-                "Đang Phục hồi..."
-              ) : (
-                <>
-                  Phục hồi{" "}
-                  {countSelectedRows === 0 ? null : `(${countSelectedRows})`}
-                </>
-              )}
-            </button>
-          ) : null}
-          {hasDeleteBtn ? (
-            <button
-              className={`uppercase bg-red text-white px-6 py-2 rounded-sm`}
-              type="button"
-              disabled={countSelectedRows === 0}
-              title={TITLES.DELETE_RECORDS}
-              onClick={() => handleDelete(selectedRowIndexes, undefined, true)}
-            >
-              {deleteLoading ? (
-                "Đang xoá..."
-              ) : (
-                <>
-                  Xoá{" "}
-                  {countSelectedRows === 0 ? null : `(${countSelectedRows})`}
-                </>
-              )}
-            </button>
-          ) : null}
-          {hasLinkCreate ? (
-            <Link
-              to={`${pathname}/add`}
-              className="uppercase bg-blue text-white px-6 py-2 rounded-sm"
-              title={TITLES.NEW_RECORD}
-            >
-              Thêm mới
-            </Link>
-          ) : null}
+          <div className="flex items-center gap-2 flex-1 w-full sm:flex-[0] sm:w-auto">
+            {hasRestoreBtn ? (
+              <button
+                className={`flex-1 text-center whitespace-nowrap uppercase bg-teal text-white px-6 py-2 rounded-sm`}
+                type="button"
+                title={TITLES.RESTORE_RECORDS}
+                disabled={countSelectedRows === 0}
+                onClick={() =>
+                  handleRestore(selectedRowIndexes, undefined, true)
+                }
+              >
+                {restoreLoading ? (
+                  "Đang Phục hồi..."
+                ) : (
+                  <>
+                    Phục hồi{" "}
+                    {countSelectedRows === 0 ? null : `(${countSelectedRows})`}
+                  </>
+                )}
+              </button>
+            ) : null}
+            {hasDeleteBtn ? (
+              <button
+                className={`flex-1 text-center whitespace-nowrap uppercase bg-red text-white px-6 py-2 rounded-sm`}
+                type="button"
+                disabled={countSelectedRows === 0}
+                title={TITLES.DELETE_RECORDS}
+                onClick={() =>
+                  handleDelete(selectedRowIndexes, undefined, true)
+                }
+              >
+                {deleteLoading ? (
+                  "Đang xoá..."
+                ) : (
+                  <>
+                    Xoá{" "}
+                    {countSelectedRows === 0 ? null : `(${countSelectedRows})`}
+                  </>
+                )}
+              </button>
+            ) : null}
+            {hasLinkCreate ? (
+              <Link
+                to={`${pathname}/add`}
+                className="flex-1 text-center whitespace-nowrap uppercase bg-blue text-white px-6 py-2 rounded-sm"
+                title={TITLES.NEW_RECORD}
+              >
+                Thêm mới
+              </Link>
+            ) : null}
+          </div>
         </div>
       )}
 
@@ -454,6 +466,7 @@ const Table = ({
                     cell.getContext()
                   );
                   const href = getRowLink?.(row.original) ?? "";
+
                   return (
                     <td
                       key={cell.id}
@@ -461,7 +474,12 @@ const Table = ({
                         indexCol === 0 ? "" : "border-l border-l-hr"
                       }`}
                     >
-                      {href ? <Link to={href}>{content}</Link> : content}
+                      {href &&
+                      !["select", "Thao tác"].includes(cell.column.id) ? (
+                        <Link to={href}>{content}</Link>
+                      ) : (
+                        content
+                      )}
                     </td>
                   );
                 })}
