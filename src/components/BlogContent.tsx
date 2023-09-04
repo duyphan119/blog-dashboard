@@ -12,7 +12,7 @@ const BlogContent: FC<Props> = ({ blog }) => {
         <img src={blog.thumbnail} alt="thumbnail" className="mb-2" />
       ) : null}
       <div className="mb-2 font-bold text-2xl">{blog.title}</div>
-      <div className="flex justify-between mb-2 text-grey">
+      <div className="flex flex-col sm:flex-row justify-between mb-2 text-grey">
         <div className="">
           Người đăng: <strong>{blog.author.name}</strong>
         </div>
@@ -22,7 +22,7 @@ const BlogContent: FC<Props> = ({ blog }) => {
         </div>
       </div>
       <div
-        className=""
+        className="blog-content"
         dangerouslySetInnerHTML={{ __html: blog.content }}
       ></div>
     </div>

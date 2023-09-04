@@ -8,3 +8,21 @@
 .tox-collection__group{
     z-index: 10000 !important;
 }
+
+.blog-content h2 {
+    font-weight: 600;font-size: 20px;margin: 8px 0;
+}
+
+.blog-content ul {
+    list-style: initial;
+    padding-left: 18px;
+}
+
+.blog-content td {
+    border: 1px solid black;
+    padding: 4px;
+}
+
+.blog-content p {
+    text-align: justify;
+}

@@ -1,4 +1,4 @@
-import { FC, useMemo, useCallback } from "react";
+import { FC, useMemo, useCallback, useEffect, useState } from "react";
 import { useDocumentTitle } from "@/hooks";
 import { Paper, Widget } from "@/components";
 import { Link, useLoaderData } from "react-router-dom";
@@ -14,6 +14,7 @@ import { TITLES } from "@/utils/titles";
 import { DATE_TIME_FORMAT } from "@/utils/constants";
 import { useMediaQuery } from "react-responsive";
 import { ROUTES } from "@/utils/routes";
+import { wsClient } from "@/config/apolloClient";
 
 type Props = {};
 
@@ -25,6 +26,7 @@ const HomePage: FC<Props> = () => {
   const isSmScreen = useMediaQuery({ query: "(min-width: 640px)" });
   const isMdScreen = useMediaQuery({ query: "(min-width: 768px)" });
 
+  const [dashboardData, setDashboardData] = useState<DashboardPage>(data);
   const {
     recentBlogs,
     mostViewBlogs,
@@ -32,7 +34,28 @@ const HomePage: FC<Props> = () => {
     currentMonthCountReply,
     previousMonthCountBlog,
     previousMonthCountReply,
-  } = data;
+  } = dashboardData;
+  useEffect(() => {
+    (async () => {
+      const { value } = await wsClient
+        .iterate({
+          query: `
+          subscription Subscription {
+            replyAdded {
+              _id
+            }
+          }
+        `,
+        })
+        .next();
+      if (value.data.replyAdded) {
+        setDashboardData((prevState) => ({
+          ...prevState,
+          currentMonthCountReply: prevState.currentMonthCountReply + 1,
+        }));
+      }
+    })();
+  }, []);
 
   const columns = useMemo<ColumnDef<Blog>[]>(() => {
     const example: ColumnDef<Blog>[] = [
